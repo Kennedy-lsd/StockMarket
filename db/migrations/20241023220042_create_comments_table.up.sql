@@ -1,0 +1,6 @@
+CREATE TABLE comments (
+    id SERIAL PRIMARY KEY,
+    title TEXT NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    stock_id INT REFERENCES stocks(id) ON DELETE CASCADE
+);
