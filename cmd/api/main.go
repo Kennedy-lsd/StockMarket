@@ -62,7 +62,9 @@ func main() {
 
 	stockC := api.Group("/api")
 	stockC.GET("/comments", commentHandler.GetAllComments)
+	stockC.GET("/comments/:id", commentHandler.GetCommentById)
 	stockC.POST("/comments", commentHandler.CreateComment)
+	stockC.DELETE("/comments/:id", commentHandler.DeleteCommentById)
 
 	api.Start(fmt.Sprintf(":%v", apiConfig.SERVER_PORT))
 

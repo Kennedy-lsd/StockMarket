@@ -22,3 +22,11 @@ func (s *CommentService) GetAll() ([]data.Comment, error) {
 func (s *CommentService) Create(comment *data.CommentCreate) error {
 	return s.CommentRepository.Post(comment)
 }
+
+func (s *CommentService) GetById(id int64) (*data.Comment, error) {
+	return s.CommentRepository.FindById(id)
+}
+
+func (s *CommentService) DeleteById(id int64) error {
+	return s.CommentRepository.DeleteById(id)
+}

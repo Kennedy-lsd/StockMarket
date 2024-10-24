@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"database/sql"
 	"net/http"
+	"strconv"
 
 	"github.com/Kennedy-lsd/StockMarket/data"
 	"github.com/Kennedy-lsd/StockMarket/internal/services"
@@ -47,4 +49,41 @@ func (h *CommentHandler) CreateComment(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, comment)
+}
+
+func (h *CommentHandler) GetCommentById(c echo.Context) error {
+	idParam := c.Param("id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid comment ID"})
+	}
+
+	comment, err := h.CommentService.GetById(id)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return c.JSON(http.StatusNotFound, map[string]string{"error": "Comment not found"})
+		}
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to fetch comment"})
+	}
+
+	return c.JSON(http.StatusOK, comment)
+
+}
+
+func (h *CommentHandler) DeleteCommentById(c echo.Context) error {
+	idParam := c.Param("id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid comment ID"})
+	}
+
+	deleteError := h.CommentService.DeleteById(id)
+
+	if deleteError != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Not Found"})
+	}
+
+	return c.JSON(http.StatusOK, map[string]string{"message": "Comment was deleted"})
+
 }
