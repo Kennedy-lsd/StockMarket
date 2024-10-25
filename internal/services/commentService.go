@@ -30,3 +30,7 @@ func (s *CommentService) GetById(id int64) (*data.Comment, error) {
 func (s *CommentService) DeleteById(id int64) error {
 	return s.CommentRepository.DeleteById(id)
 }
+
+func (s *CommentService) UpdateById(id int64, comment *data.CommentUpdate) error {
+	return s.CommentRepository.UpdateById(id, comment)
+}

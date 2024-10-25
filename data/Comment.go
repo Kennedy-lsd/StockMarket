@@ -15,3 +15,7 @@ type CommentCreate struct {
 	CreatedAt *time.Time `json:"created_at"`
 	StockId   *uint      `json:"stock_id"`
 }
+
+type CommentUpdate struct {
+	Title *string `json:"title"`
+}

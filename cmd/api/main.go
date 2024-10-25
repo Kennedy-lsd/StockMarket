@@ -65,6 +65,7 @@ func main() {
 	stockC.GET("/comments/:id", commentHandler.GetCommentById)
 	stockC.POST("/comments", commentHandler.CreateComment)
 	stockC.DELETE("/comments/:id", commentHandler.DeleteCommentById)
+	stockC.PATCH("/comments/:id", commentHandler.UpdateCommentById)
 
 	api.Start(fmt.Sprintf(":%v", apiConfig.SERVER_PORT))
 

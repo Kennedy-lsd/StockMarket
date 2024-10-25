@@ -89,3 +89,27 @@ func (r *CommentRepository) DeleteById(id int64) error {
 
 	return nil
 }
+
+func (r *CommentRepository) UpdateById(id int64, newComment *data.CommentUpdate) error {
+	query := `UPDATE comments 
+	SET title = $1
+	WHERE id = $2`
+
+	result, err := r.DB.Exec(query, newComment.Title, id)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		log.Println("No rows updated. Comment may not exist.")
+		return nil
+	}
+
+	log.Println("Comment updated successfully.")
+	return nil
+}
