@@ -1,7 +1,9 @@
 package handlers
 
 import (
+	"database/sql"
 	"net/http"
+	"strconv"
 
 	"github.com/Kennedy-lsd/StockMarket/data"
 	"github.com/Kennedy-lsd/StockMarket/internal/services"
@@ -46,4 +48,37 @@ func (h *StockHandler) CreateStock(c echo.Context) error {
 	}
 
 	return c.JSON(http.StatusCreated, stock)
+}
+
+func (h *StockHandler) GetStockById(c echo.Context) error {
+	idParam := c.Param("id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid id param"})
+	}
+	stock, err := h.StockService.GetById(id)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return c.JSON(http.StatusNotFound, map[string]string{"error": "Comment not found"})
+		}
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Faild to fetch"})
+	}
+
+	return c.JSON(http.StatusOK, stock)
+}
+
+func (h *StockHandler) DeleteStockById(c echo.Context) error {
+	idParam := c.Param("id")
+	id, err := strconv.ParseInt(idParam, 10, 64)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, map[string]string{"error": "Invalid Id param"})
+	}
+
+	deleteError := h.StockService.DeleteById(id)
+
+	if deleteError != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Not Found"})
+	}
+	return c.JSON(http.StatusOK, map[string]string{"error": "Stock was deleted"})
 }

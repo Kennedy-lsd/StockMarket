@@ -58,7 +58,9 @@ func main() {
 
 	stockR := api.Group("/api")
 	stockR.GET("/stocks", stockHandler.GetAllStocks)
+	stockR.GET("/stocks/:id", stockHandler.GetStockById)
 	stockR.POST("/stocks", stockHandler.CreateStock)
+	stockR.DELETE("/stocks/:id", stockHandler.DeleteStockById)
 
 	stockC := api.Group("/api")
 	stockC.GET("/comments", commentHandler.GetAllComments)

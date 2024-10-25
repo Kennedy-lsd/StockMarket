@@ -2,6 +2,7 @@ package repos
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"sort"
 
@@ -69,6 +70,56 @@ func (r *StockRepository) Post(stock *data.CreatedStock) error {
 	if err != nil {
 		log.Printf("Error creating stock: %v", err)
 		return err
+	}
+
+	return nil
+}
+
+func (r *StockRepository) FindById(id int64) (*data.Stock, error) {
+	query := `SELECT * FROM stocks WHERE id = $1`
+	var stock data.Stock
+
+	err := r.DB.QueryRow(query, id).Scan(&stock.Id, &stock.CompanyName, &stock.CompanySymbol, &stock.Price, &stock.LastDiv)
+	if err != nil {
+		return nil, err
+	}
+
+	commentsQuery := "SELECT * FROM comments WHERE stock_id = $1"
+	rows, err := r.DB.Query(commentsQuery, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var comment data.Comment
+		err := rows.Scan(&comment.Id, &comment.Title, &comment.CreatedAt, &comment.StockId)
+		if err != nil {
+			return nil, err
+		}
+
+		stock.Comments = append(stock.Comments, comment)
+	}
+	return &stock, nil
+}
+
+func (r *StockRepository) DeleteById(id int64) error {
+	query := `DELETE FROM stocks WHERE id = $1`
+
+	result, err := r.DB.Exec(query, id)
+	if err != nil {
+		log.Printf("Error executing DELETE: %v", err)
+		return err
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		log.Printf("Error checking affected rows: %v", err)
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return fmt.Errorf("no stocks found with the given ID")
 	}
 
 	return nil

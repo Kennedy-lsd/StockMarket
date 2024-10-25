@@ -22,3 +22,11 @@ func (s *StockService) GetAll() ([]data.Stock, error) {
 func (s *StockService) Create(stock *data.CreatedStock) error {
 	return s.StockRepo.Post(stock)
 }
+
+func (s *StockService) GetById(id int64) (*data.Stock, error) {
+	return s.StockRepo.FindById(id)
+}
+
+func (s *StockService) DeleteById(id int64) error {
+	return s.StockRepo.DeleteById(id)
+}
