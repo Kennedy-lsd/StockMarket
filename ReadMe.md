@@ -23,6 +23,8 @@ StockMarket API
    git clone https://github.com/Kennedy-lsd/StockMarket.git
    cd stockmarket
    ```
-2. Simply write to the console:
+2. Add your frontend port in main.go for CORS (if you need it)
+
+3. Simply write to the console:
 
    `make`
