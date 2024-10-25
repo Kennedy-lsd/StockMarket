@@ -11,6 +11,7 @@ import (
 	"github.com/Kennedy-lsd/StockMarket/internal/services"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 	_ "github.com/lib/pq"
 )
 
@@ -47,6 +48,11 @@ func main() {
 	InitializeDB(dsn)
 
 	api := echo.New()
+
+	api.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"http://localhost:5173"}, //Update with your frontend :)
+		AllowMethods: []string{echo.GET, echo.POST, echo.PUT, echo.DELETE},
+	}))
 
 	stockRepository := repos.NewStockRepository(DB)
 	stockService := services.NewStockService(stockRepository)
